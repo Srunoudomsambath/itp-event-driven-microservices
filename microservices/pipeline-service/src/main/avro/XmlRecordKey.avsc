@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "Key",
+  "namespace": "t2.CORE_BANKING.RECORD_XML",
+  "fields": [
+    {
+      "name": "RECID",
+      "type": "string"
+    }
+  ],
+  "connect.name": "t2.CORE_BANKING.RECORD_XML.Key"
+}

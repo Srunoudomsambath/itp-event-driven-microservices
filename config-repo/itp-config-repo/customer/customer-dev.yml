@@ -1,0 +1,6 @@
+service:
+  name: Customer Service (Development)
+  version: 1.0-snapshot
+secret:
+  weak-password: ${WEAK_PASSWORD}
+  strong-password: ${STRONG_PASSWORD}

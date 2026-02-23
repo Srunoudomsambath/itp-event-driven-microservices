@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: configserver
+  profiles:
+    # native,git,vault
+    active: git, vault
+  cloud:
+    config:
+      server:
+        vault:
+          host: localhost
+          port: 8200
+          scheme: http
+          authentication: token
+          token: myroot
+          kv-version: 2
+          backend: secret
+          profile-separator: /
+        git:
+          uri: ${GL_URI}
+          username: ${GL_USER}
+          default-label: main
+          search-paths: "/**"
+          password: glpat-yjFpt7pPt-_2HqeRwCxv5W86MQp1Omd2cGk2Cw.01.121lig3jv
+        native:
+          search-locations:
+           - file:\D:\ISTAD\IT Professional\itp-microservices\itp-config-repo\
+           - file:\D:\ISTAD\IT Professional\itp-microservices\itp-config-repo\{application}\
+server:
+  port: 8888

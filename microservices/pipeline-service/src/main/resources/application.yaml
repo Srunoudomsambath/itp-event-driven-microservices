@@ -1,0 +1,135 @@
+server:
+  port: 20262
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}
+    prefer-ip-address: true
+spring:
+  cloud:
+    function:
+      definition: processProduct;processMessage;processProductDetail;processOrder;processOrderDetail;processOracle;captureEnvelope;consumeDbzEvent
+    stream:
+      bindings:
+        captureEnvelope-in-0:
+          destination: t2.CORE_BANKING.RECORD_XML
+          group: record_xml_2
+        consumeDbzEvent-in-0:
+          destination: t2.CORE_BANKING.RECORD_XML
+          group: record_xml_1
+        processOracle-in-0:
+          destination: t2.CORE_BANKING.RECORD_XML
+          content-type: application/*+avro
+        processOrder-in-0:
+          destination: cdc.public.orders
+          group: order-consumer-group
+          content-type: application/*+avro
+        processProductDetail-in-0:
+          destination: product-detail
+          group: monitor-group2
+          content-type: application/json
+        processProduct-in-0:
+          destination: test-product # topic_name
+          group: monitor-group # consumer_group_id
+          content-type: application/json
+        processMessage-in-0:
+          destination: test-topic
+        processProductDetail-out-0:
+          destination: processed-product-detail
+          content-type: application/json
+        processOrderDetail-in-0:
+          destination: cdc.public.orders  # Input: consume from same CDC topic
+          group: order-detail-consumer-group  # Different group to avoid conflict
+          content-type: application/*+avro
+        processOrderDetail-out-0:
+          destination: process-order-detail  # Output: produce to this topic
+
+      kafka:
+        binder:
+          brokers: localhost:29092,localhost:29094,localhost:29096
+          configuration:
+            avro.remove.java.properties: true
+            auto.offset.reset: earliest
+            schema.registry.url: http://localhost:8081
+        bindings:
+          processOrder-in-0:
+            consumer:
+              configuration:
+                key.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+                value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+                specific.avro.reader: false
+          processOrderDetail-in-0:
+            consumer:
+              configuration:
+                key.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+                value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+                specific.avro.reader: false  # ← Important!
+          processOracle-in-0:
+            consumer:
+              configuration:
+                key.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+                value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+                specific.avro.reader: false  # ← Important!
+          captureEnvelope-in-0:
+            consumer:
+              configuration:
+                key.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+                value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+                schema.registry.url: http://localhost:8081
+                specific.avro.reader: true  # ← Important!
+          consumeDbzEvent-in-0:
+            consumer:
+              configuration:
+                key.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+                value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+                schema.registry.url: http://localhost:8081
+                specific.avro.reader: false  # ← Important!
+
+  application:
+    name: pipeline
+  profiles:
+    active: dev
+  config:
+    import: optional:configserver:http://localhost:8888
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090
+      client:
+        provider:
+          itp-standard:
+            issuer-uri: http://localhost:9090
+        registration:
+          itp-standard:
+            provider: itp-standard
+            client-id: itp-standard
+            client-secret: qwerqwer
+            redirect-uri: http://localhost:9999/login/oauth2/code/itp-standard
+            authorization-grant-type: client_credentials
+            scope:
+              - openid
+              - email
+              - profile
+
+
+
+# Resilience4j Configuration
+resilience4j:
+  circuitbreaker:
+    instances:
+      account:
+        sliding-window-size: 10
+        failure-rate-threshold: 50 # Percentages
+        permitted-number-of-calls-in-half-open-state: 2
+        wait-duration-in-open-state: 10000
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+logging:
+  level:
+    co.istad.sambat.pipeline_service: DEBUG

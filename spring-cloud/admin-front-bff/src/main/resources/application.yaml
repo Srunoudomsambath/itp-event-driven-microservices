@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: admin-fornt-bff
+  profiles:
+    active: dev
+  config:
+    import: optional:configserver:http://localhost:8888
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          default-filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin Access-Control-Request-Headers
+            - SaveSession
+            - TokenRelay=
+          routes:
+            - id: frontbff
+              uri: http://localhost:3001
+              predicates:
+                - Path=/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090
+      client:
+        provider:
+          itp-admin-frontbff:
+            issuer-uri: http://localhost:9090
+        registration:
+          itp-admin-frontbff:
+            provider: itp-admin-frontbff
+            client-id: itp-admin-frontbff
+            client-secret: qwerqwer
+            redirect-uri: http://localhost:9991/login/oauth2/code/itp-admin-frontbff
+            authorization-grant-type:
+              - authorization_code
+            scope:
+              - openid
+              - email
+              - profile
+
+server:
+  port: 9991

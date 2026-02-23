@@ -1,0 +1,7 @@
+service:
+  name: Account Service (Quality Assurance)
+  version: 1.0-pre-released
+
+secret:
+  weak-password: ${WEAK_PASSWORD}
+  strong-password: ${STRONG_PASSWORD}

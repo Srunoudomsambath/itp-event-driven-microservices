@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.42/8365263844ebb62398e0dc33057ba10ba472d3b8/lombok-1.18.42.jar" />
+        </processorPath>
+        <module name="itp-ebanking.microservices.customer-service.main" />
+        <module name="itp-ebanking.spring-cloud.gateway-server.main" />
+        <module name="itp-ebanking.spring-cloud.iam-service.main" />
+        <module name="itp-ebanking.common.main" />
+        <module name="itp-ebanking.microservices.account-service.main" />
+        <module name="itp-ebanking.spring-cloud.front-bff.main" />
+        <module name="itp-ebanking.microservices.pipeline-service.main" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="21" />
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="itp-ebanking.common" options="-parameters" />
+      <module name="itp-ebanking.common.main" options="-parameters" />
+      <module name="itp-ebanking.common.test" options="-parameters" />
+      <module name="itp-ebanking.microservices.account-service" options="-parameters" />
+      <module name="itp-ebanking.microservices.account-service.main" options="-parameters" />
+      <module name="itp-ebanking.microservices.account-service.test" options="-parameters" />
+      <module name="itp-ebanking.microservices.customer-service" options="-parameters" />
+      <module name="itp-ebanking.microservices.customer-service.main" options="-parameters" />
+      <module name="itp-ebanking.microservices.customer-service.test" options="-parameters" />
+      <module name="itp-ebanking.microservices.pipeline-service" options="-parameters" />
+      <module name="itp-ebanking.microservices.pipeline-service.main" options="-parameters" />
+      <module name="itp-ebanking.microservices.pipeline-service.test" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.admin-front-bff" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.admin-front-bff.main" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.admin-front-bff.test" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.eurekaserver" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.eurekaserver.main" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.eurekaserver.test" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.front-bff" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.front-bff.main" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.front-bff.test" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.gateway-server" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.gateway-server.main" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.gateway-server.test" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.iam-service" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.iam-service.main" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.iam-service.test" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.itp-config-server" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.itp-config-server.main" options="-parameters" />
+      <module name="itp-ebanking.spring-cloud.itp-config-server.test" options="-parameters" />
+    </option>
+  </component>
+</project>

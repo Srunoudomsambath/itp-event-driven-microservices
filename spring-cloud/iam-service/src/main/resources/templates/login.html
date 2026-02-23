@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Login</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Preload Logo -->
+    <link
+            rel="preload"
+            as="image"
+            href="https://res.cloudinary.com/dkt1t22qc/image/upload/v1742348949/Prestataires_Documents/smj7n1bdlpjsfsotwpco.png"/>
+
+</head>
+
+<body
+        class="bg-cover bg-gradient-to-br from-[#7337FF] via-[#000000] to-[#0C7EA8]"
+        style="background-image:url(https://res.cloudinary.com/dkt1t22qc/image/upload/v1742348950/Prestataires_Documents/fopt5esl9cgvlcawz1z4.jpg)"
+>
+
+<div class="h-screen flex justify-center items-center backdrop-brightness-50">
+    <div class="flex flex-col items-center space-y-8">
+
+        <!-- Logo -->
+        <img
+                src="https://res.cloudinary.com/dkt1t22qc/image/upload/v1742348949/Prestataires_Documents/smj7n1bdlpjsfsotwpco.png"
+                alt="TyBot Logo"
+                class="w-32 cursor-pointer"/>
+
+        <!-- Card -->
+        <div
+                class="rounded-[20px] w-80 p-8 bg-[#310D84]"
+                style="box-shadow:-6px 3px 20px 4px #0000007d">
+
+            <h1 class="text-white text-3xl font-bold mb-4 text-center">Login</h1>
+
+            <!-- Error -->
+            <div th:if="${param.error}"
+                 class="mb-3 p-2 rounded bg-red-500/20 text-red-200 text-sm">
+                Invalid email or password
+            </div>
+
+            <!-- Logout -->
+            <div th:if="${param.logout}"
+                 class="mb-3 p-2 rounded bg-green-500/20 text-green-200 text-sm">
+                You have been logged out
+            </div>
+
+            <!-- Login Form -->
+            <form th:action="@{/login}" method="post" class="space-y-4">
+
+                <!-- CSRF -->
+<!--                <input type="hidden"-->
+<!--                       th:name="${_csrf.parameterName}"-->
+<!--                       th:value="${_csrf.token}"/>-->
+
+                <input
+                        type="text"
+                        name="username"
+                        placeholder="Email address"
+                        required
+                        class="bg-[#8777BA] w-full p-2.5 rounded-md
+                               placeholder:text-gray-300 text-white
+                               shadow-md shadow-blue-950"/>
+
+                <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        required
+                        class="bg-[#8777BA] w-full p-2.5 rounded-md
+                               placeholder:text-gray-300 text-white
+                               shadow-md shadow-blue-950"/>
+
+                <div class="text-right">
+                    <a href="#" class="text-[#228CE0] text-xs hover:underline">
+                        Forget Password?
+                    </a>
+                </div>
+
+                <button
+                        type="submit"
+                        class="h-10 w-full text-white rounded-md
+                               bg-gradient-to-br from-[#7336FF] to-[#3269FF]
+                               shadow-md shadow-blue-950">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="flex items-center my-4">
+                <div class="flex-grow border-t border-gray-400"></div>
+                <span class="px-2 text-gray-300 text-xs">OR</span>
+                <div class="flex-grow border-t border-gray-400"></div>
+            </div>
+
+            <!-- Social Login -->
+            <div class="flex justify-center gap-4">
+
+                <!-- Google -->
+                <a th:href="@{/oauth2/authorization/google}"
+                   class="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow hover:scale-105 transition">
+                    <img src="https://www.svgrepo.com/show/475656/google-color.svg"
+                         class="w-5"/>
+                </a>
+
+                <!-- GitHub -->
+                <a th:href="@{/oauth2/authorization/github}"
+                   class="w-10 h-10 flex items-center justify-center bg-gray-900 rounded-full shadow hover:scale-105 transition">
+                    <img src="https://www.svgrepo.com/show/512317/github-142.svg"
+                         class="w-5 invert"/>
+                </a>
+
+                <!-- Facebook -->
+                <a th:href="@{/oauth2/authorization/facebook}"
+                   class="w-10 h-10 flex items-center justify-center bg-blue-600 rounded-full shadow hover:scale-105 transition">
+                    <img src="https://www.svgrepo.com/show/475647/facebook-color.svg"
+                         class="w-5"/>
+                </a>
+
+            </div>
+
+            <!-- Signup -->
+            <div class="text-gray-300 text-center mt-4 text-sm">
+                Don’t have an account?
+                <a href="/register" class="text-[#228CE0] hover:underline">
+                    Sign up
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
