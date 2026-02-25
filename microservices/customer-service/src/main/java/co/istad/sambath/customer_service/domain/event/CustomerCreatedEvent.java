@@ -13,11 +13,12 @@ import java.time.LocalDate;
 @Builder
 public record CustomerCreatedEvent(
         CustomerId customerId,
-        CustomerName customerName,
-        CustomerGender customerGender,
-        CustomerEmail customerEmail,
+        CustomerName name,
+        CustomerGender gender,
+        CustomerEmail email,
         LocalDate dob,
         Kyc kyc,
+        String phoneNumber,
         Address address,
         Contact contact,
         CustomerSegmentId customerSegmentId

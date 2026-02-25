@@ -35,9 +35,9 @@ public class CustomerAggregate {
     @AggregateIdentifier
     private CustomerId customerId;
 
-    private CustomerName customerName;
-    private CustomerGender customerGender;
-    private CustomerEmail customerEmail;
+    private CustomerName name;
+    private CustomerGender gender;
+    private CustomerEmail email;
     private LocalDate dob;
     private Kyc kyc;
     private Address address;
@@ -49,7 +49,8 @@ public class CustomerAggregate {
 
     // Domain Logic for creating customer Write logic here
     // It's not business logic (business logic include domain logic)
-    // Constructor CommandHanlder required for first event
+    // We write Constructor CommandHandler required for first event
+    // Produced event
     @CommandHandler
     public CustomerAggregate(CreateCustomerCommand createCustomerCommand) {
         // Perform domain logic
@@ -59,13 +60,14 @@ public class CustomerAggregate {
         // Publish event -> CustomerCreatedEvent
         CustomerCreatedEvent customerCreatedEvent = CustomerCreatedEvent.builder()
                 .customerId(createCustomerCommand.customerId())
-                .customerName(createCustomerCommand.customerName())
-                .customerGender(createCustomerCommand.customerGender())
-                .customerEmail(createCustomerCommand.customerEmail())
+                .name(createCustomerCommand.name())
+                .gender(createCustomerCommand.gender())
+                .email(createCustomerCommand.email())
                 .dob(createCustomerCommand.dob())
                 .kyc(createCustomerCommand.kyc())
                 .address(createCustomerCommand.address())
                 .contact(createCustomerCommand.contact())
+                .phoneNumber(createCustomerCommand.phoneNumber())
                 .customerSegmentId(createCustomerCommand.customerSegmentId())
                 .build();
         AggregateLifecycle.apply(customerCreatedEvent);
@@ -84,15 +86,16 @@ public class CustomerAggregate {
     }
 
     @EventSourcingHandler
-    public void on (CustomerCreatedEvent customerCreatedEvent) {
+        public void on (CustomerCreatedEvent customerCreatedEvent) {
         this.customerId = customerCreatedEvent.customerId();
-        this.customerName = customerCreatedEvent.customerName();
-        this.customerGender = customerCreatedEvent.customerGender();
-        this.customerEmail = customerCreatedEvent.customerEmail();
+        this.name = customerCreatedEvent.name();
+        this.gender = customerCreatedEvent.gender();
+        this.email = customerCreatedEvent.email();
         this.dob = customerCreatedEvent.dob();
         this.kyc = customerCreatedEvent.kyc();
         this.address = customerCreatedEvent.address();
         this.contact = customerCreatedEvent.contact();
+        this.phoneNumber = customerCreatedEvent.phoneNumber();
         this.customerSegmentId = customerCreatedEvent.customerSegmentId();
     }
 

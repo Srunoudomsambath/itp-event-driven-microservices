@@ -9,10 +9,10 @@ import java.time.LocalDate;
 public record CreateCustomerRequest(
 
         @NotNull
-        CustomerName customerName,
+        CustomerName name,
 
         @NotNull
-        CustomerEmail customerEmail,
+        CustomerEmail email,
 
         @NotNull
         LocalDate dob,
@@ -26,10 +26,15 @@ public record CreateCustomerRequest(
         @NotNull
         Address address,
 
+        //
+        @NotNull
+        Contact contact,
+
         @NotNull
         String phoneNumber,
 
         @NotNull
         CustomerSegmentId customerSegmentId
+
 ) {
 }

@@ -27,25 +27,6 @@ public class CustomerServiceImpl implements CustomerService {
     private final CommandGateway commandGateway;
 
     @Override
-    public ChangePhoneNumberResponse changePhoneNumber(UUID customerId, ChangePhoneNumberRequest changePhoneNumberRequest) {
-
-        // 1. Transfer data from request to command
-        ChangePhoneNumberCommand changePhoneNumberCommand = ChangePhoneNumberCommand.builder()
-                .customerId(new CustomerId(customerId))
-                .phoneNumber(changePhoneNumberRequest.phoneNumber())
-                .build();
-        log.info("Change phone number command: {}", changePhoneNumberCommand);
-
-        UUID result = commandGateway.sendAndWait(changePhoneNumberCommand);
-
-        return ChangePhoneNumberResponse.builder()
-                .customerId(result)
-                .phoneNumber(changePhoneNumberRequest.phoneNumber())
-                .message("Change phone number successfully")
-                .build();
-    }
-
-    @Override
     public CreateCustomerResponse createCustomer(CreateCustomerRequest createCustomerRequest) {
 
         // 1. Transfer data from request to command
@@ -63,4 +44,26 @@ public class CustomerServiceImpl implements CustomerService {
                 .build();
 
     }
+
+    @Override
+    public ChangePhoneNumberResponse changePhoneNumber(UUID customerId, ChangePhoneNumberRequest changePhoneNumberRequest) {
+
+        // 1. Transfer data from request to command
+        ChangePhoneNumberCommand changePhoneNumberCommand = ChangePhoneNumberCommand.builder()
+                .customerId(new CustomerId(customerId))
+                .phoneNumber(changePhoneNumberRequest.phoneNumber())
+                .build();
+        log.info("Change phone number command: {}", changePhoneNumberCommand);
+
+        // Send command (no return expected)
+        commandGateway.sendAndWait(changePhoneNumberCommand);
+
+        return ChangePhoneNumberResponse.builder()
+                .customerId(customerId)   // use input ID
+                .phoneNumber(changePhoneNumberRequest.phoneNumber())
+                .message("Change phone number successfully")
+                .build();
+    }
+
+
 }

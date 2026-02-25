@@ -14,13 +14,14 @@ public record CreateCustomerCommand(
         // call command Customer id
         // implementation project(':common')
         CustomerId customerId,
-        CustomerName customerName,
-        CustomerGender customerGender,
-        CustomerEmail customerEmail,
+        CustomerName name,
+        CustomerGender gender,
+        CustomerEmail email,
         LocalDate dob,
         Kyc kyc,
         Address address,
         Contact contact,
+        String phoneNumber,
         CustomerSegmentId customerSegmentId
 ) {
 }
