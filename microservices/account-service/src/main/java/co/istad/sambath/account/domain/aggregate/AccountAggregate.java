@@ -3,17 +3,15 @@ package co.istad.sambath.account.domain.aggregate;
 
 import co.istad.sambath.account.domain.command.CreateAccountCommand;
 import co.istad.sambath.account.domain.command.DepositMoneyCommand;
-import co.istad.sambath.account.domain.event.AccountCreatedEvent;
+import co.istad.sambath.account.domain.command.FreezeAccountCommand;
+import co.istad.sambath.account.domain.command.WithdrawMoneyCommand;
+import co.istad.sambath.account.domain.event.AccountFrozenEvent;
 import co.istad.sambath.account.domain.event.MoneyDepositedEvent;
+import co.istad.sambath.account.domain.event.MoneyWithdrawnEvent;
 import co.istad.sambath.account.domain.exception.AccountDomainException;
 import co.istad.sambath.account.domain.validate.AccountValidate;
-import co.istad.sambath.account.domain.valueObject.AccountStatus;
-import co.istad.sambath.account.domain.valueObject.AccountTypeCode;
-import co.istad.sambath.account.domain.valueObject.Currency;
-import co.istad.sambath.account.domain.valueObject.Money;
-import co.istad.sambath.common.domain.valueObject.AccountId;
-import co.istad.sambath.common.domain.valueObject.BranchId;
-import co.istad.sambath.common.domain.valueObject.CustomerId;
+import co.istad.sambath.common.domain.event.AccountCreatedEvent;
+import co.istad.sambath.common.domain.valueObject.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -66,18 +64,44 @@ public class AccountAggregate {
         }
     }
 
+    private void ensureAccountIsActive() {
+        // validate account is active before deposit
+        if (this.status != AccountStatus.ACTIVE) {
+            throw new AccountDomainException(
+                    "Account is not ACTIVE. Account status is: " + this.status
+            );
+        }
+    }
+
+    private void validateBalanceIsEnough(Money amount) {
+        if (this.balance.isLessthan(amount)) {
+            throw new AccountDomainException("Insufficient balance. Current balance: " + this.balance.amount());
+        }
+    }
+
+    private void validateAccountOwner(CustomerId customerId) {
+        if(!this.customerId.equals(customerId)){
+            throw new AccountDomainException("Customer does not own this account");
+        }
+    }
+
+
 
     @CommandHandler
     public AccountAggregate(CreateAccountCommand command) {
 
         log.info("CreateAccountCommand: {}", command);
 
+        // Approach 1 validate in the value object itself
         // validate account number
         AccountValidate.validateAccountNumber(command.accountNumber());
 
+        // Approach 2 validate in this aggregate
         // validate account type code
+        validateAccountType(command.accountTypeCode());
 
         // validate balance
+        validateInitialBalance(command.initialBalance());
 
         // create event object then apply lifecycle
         AccountCreatedEvent accountCreatedEvent = AccountCreatedEvent.builder()
@@ -88,6 +112,9 @@ public class AccountAggregate {
                 .accountTypeCode(command.accountTypeCode())
                 .branchId(command.branchId())
                 .initialBalance(command.initialBalance())
+                .createdAt(ZonedDateTime.now())
+                .createdBy("ADMIN")
+                .status(AccountStatus.ACTIVE)
                 .build();
         AggregateLifecycle.apply(accountCreatedEvent);
     }
@@ -101,14 +128,19 @@ public class AccountAggregate {
         this.accountTypeCode = event.accountTypeCode();
         this.branchId = event.branchId();
         this.balance = event.initialBalance();
-        this.createdAt = ZonedDateTime.now();
-        this.updatedAt = ZonedDateTime.now();
+        this.status = event.status();
+        this.createdAt = event.createdAt();
     }
 
 
     @CommandHandler
     public void handle(DepositMoneyCommand command) {
         log.info("DepositMoneyCommand: {}", command);
+
+        ensureAccountIsActive();
+
+        validateAccountOwner(command.customerId());
+
 
         Money newBalance = this.balance.add(command.amount());
 
@@ -118,6 +150,7 @@ public class AccountAggregate {
                 .amount(command.amount())
                 .newBalance(newBalance)
                 .remark(command.remark())
+                .customerId(command.customerId())
                 .createdAt(ZonedDateTime.now())
                 .build();
 
@@ -130,5 +163,65 @@ public class AccountAggregate {
         this.balance = event.newBalance(); // adding to existing balance.
         this.updatedAt = event.createdAt();
 
+    }
+
+    @CommandHandler
+    public void handle(WithdrawMoneyCommand command) {
+        log.info("WithdrawMoneyCommand: {}", command);
+
+        // validate account is active before withdraw
+        ensureAccountIsActive();
+
+        validateAccountOwner(command.customerId());
+
+
+        // validate sufficient balance
+        validateBalanceIsEnough(command.amount());
+
+        Money newBalance = this.balance.subtract(command.amount());
+
+        MoneyWithdrawnEvent event = MoneyWithdrawnEvent.builder()
+                .accountId(command.accountId())
+                .transactionId(command.transactionId())
+                .amount(command.amount())
+                .newBalance(newBalance)
+                .remark(command.remark())
+                .customerId(command.customerId())
+                .createdAt(ZonedDateTime.now())
+                .build();
+
+        AggregateLifecycle.apply(event);
+    }
+    @EventSourcingHandler
+    public void on(MoneyWithdrawnEvent event) {
+        this.balance = event.newBalance(); // subtract from existing balance
+        this.updatedAt = event.createdAt();
+    }
+
+
+    @CommandHandler
+    public void handle(FreezeAccountCommand command) {
+        log.info("FreezeAccountCommand: {}", command);
+
+        // validate: can only freeze an ACTIVE account
+        ensureAccountIsActive();
+
+        AccountFrozenEvent event = AccountFrozenEvent.builder()
+                .accountId(command.accountId())
+                .customerId(this.customerId)          // from aggregate state
+                .previousStatus(this.status)          // from aggregate state
+                .newStatus(AccountStatus.FREEZE)
+                .reason(command.remark())
+                .requestedBy(command.requestBy())
+                .createdAt(ZonedDateTime.now())
+                .build();
+
+        AggregateLifecycle.apply(event);
+    }
+
+    @EventSourcingHandler
+    public void on(AccountFrozenEvent event) {
+        this.status = event.newStatus();
+        this.updatedAt = event.createdAt();
     }
 }
