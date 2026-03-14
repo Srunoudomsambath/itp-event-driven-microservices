@@ -18,7 +18,7 @@ public class CustomerSegmentEntity {
     @Id
     private UUID customerSegmentId;
 
-    private CustomerSegmentType  customerSegmentType;
+    private CustomerSegmentType customerSegmentType;
 
     @OneToMany(mappedBy = "customerSegment",cascade = CascadeType.ALL)
 //    @JoinColumn(name = "customer_id")

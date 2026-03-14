@@ -19,13 +19,14 @@ import org.axonframework.spring.stereotype.Aggregate;
 import org.springframework.context.event.EventListener;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 // Entity of DDD
 // It can not set value so no Setter
 // Axion
 @Slf4j
-@Aggregate
+@Aggregate(snapshotTriggerDefinition = "customerSnapshotTriggerDefinition")
 @NoArgsConstructor
 @Getter
 @EqualsAndHashCode

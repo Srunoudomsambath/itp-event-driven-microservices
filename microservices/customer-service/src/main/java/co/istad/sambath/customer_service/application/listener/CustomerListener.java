@@ -10,6 +10,7 @@ import co.istad.sambath.customer_service.domain.event.CustomerCreatedEvent;
 import co.istad.sambath.customer_service.domain.event.CustomerPhoneNumberChangeEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@ProcessingGroup("customer-group")
 public class CustomerListener {
 
     private final CustomerRepository customerRepository;
@@ -31,7 +33,7 @@ public class CustomerListener {
         log.info("CustomerPhoneNumberChangeEvent: {}",customerPhoneNumberChangeEvent);
         // 1. Find existing customer
         CustomerEntity customerEntity = customerRepository
-                .findById(customerPhoneNumberChangeEvent.customerId().value())
+                .findById(customerPhoneNumberChangeEvent.customerId().getValue())
                 .orElseThrow(() ->
                         new ResponseStatusException(
                                 HttpStatus.NOT_FOUND,

@@ -3,6 +3,7 @@ package co.istad.sambath.customer_service.application.mapper;
 
 import co.istad.sambath.common.domain.valueObject.CustomerId;
 import co.istad.sambath.customer_service.application.dto.create.CreateCustomerRequest;
+import co.istad.sambath.customer_service.application.query.CustomerResponse;
 import co.istad.sambath.customer_service.data.entity.CustomerEntity;
 import co.istad.sambath.customer_service.domain.command.CreateCustomerCommand;
 import co.istad.sambath.customer_service.domain.event.CustomerCreatedEvent;
@@ -18,6 +19,8 @@ public interface CustomerApplicationMapper  {
 
     @Mapping(source = "customerId.value",target = "customerId")
     CustomerEntity customerCreatedEventToCustomerEntity(CustomerCreatedEvent customerCreatedEvent);
+
+    CustomerResponse customerEntityToCustomerResponse(CustomerEntity customerEntity);
 }
 
 
