@@ -2,7 +2,6 @@ package co.istad.sambath.account.application.mapper;
 
 
 import co.istad.sambath.account.application.dto.create.CreateAccountRequest;
-import co.istad.sambath.account.data.entity.AccountEntity;
 import co.istad.sambath.account.domain.command.CreateAccountCommand;
 import co.istad.sambath.common.domain.event.AccountCreatedEvent;
 import co.istad.sambath.common.domain.valueObject.AccountId;

@@ -21,7 +21,7 @@ import java.util.function.BiFunction;
 public class CreateAccountCommandInterceptor
         implements MessageDispatchInterceptor<CommandMessage<?>> {
 
-    private final CustomerServiceClient CustomerServiceClient;  // only one dependency now
+    private final CustomerServiceClient CustomerServiceClient;
 
     @Override
     public BiFunction<Integer, CommandMessage<?>, CommandMessage<?>> handle(
@@ -36,7 +36,7 @@ public class CreateAccountCommandInterceptor
             log.info("Intercepting CreateAccountCommand — validating customerId={}",
                     createCmd.customerId());
 
-            // Only validate what the aggregate CANNOT know — external customer existence
+            //  validate what the aggregate can not know — external customer existence
             CustomerResponse customer = CustomerServiceClient
                     .getCustomerById(createCmd.customerId().toString());
 
