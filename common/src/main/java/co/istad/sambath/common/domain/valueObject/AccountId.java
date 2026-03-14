@@ -5,4 +5,8 @@ import java.util.UUID;
 public record AccountId(
         UUID value // value object
 ) {
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 }

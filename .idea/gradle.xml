@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/config-repo" />
             <option value="$PROJECT_DIR$/config-repo/itp-config-repo" />
             <option value="$PROJECT_DIR$/microservices" />
+            <option value="$PROJECT_DIR$/microservices/account-query-service" />
             <option value="$PROJECT_DIR$/microservices/account-service" />
             <option value="$PROJECT_DIR$/microservices/customer-service" />
             <option value="$PROJECT_DIR$/microservices/pipeline-service" />

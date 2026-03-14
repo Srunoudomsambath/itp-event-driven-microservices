@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: account-query-service
+  profiles:
+    active: dev
+  config:
+    import: optional:configserver:http://localhost:8888
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: itpusr
+    password: itp@168
+    url: jdbc:postgresql://localhost:16168/db_account_query
+
+  liquibase:
+    enabled: true
+#    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:16168/db_account_query
+    user: itpusr
+    password: itp@168
+
+  r2dbc:
+    url: r2dbc:postgresql://localhost:16168/db_account_query
+    username: itpusr
+    password: itp@168
+
+
+
+
+axon:
+  kafka:
+    bootstrap-servers: localhost:29092,localhost:29094,localhost:29096
+    default-topic: Axon.Account.Events
+    client-id: kafka-axon-account
+    message-converter-mode: default # alternative is cloud_event <https://cloudevents.io/>
+    properties:
+      security.protocol: PLAINTEXT # PLAINTEXT for no security purpose
+#    publisher:
+#      confirmation-mode: transactional
+    consumer:
+      event-processor-mode: pooled_streaming
+
+  axonserver:
+    enabled: false
+  serializer:
+    general: jackson
+    events: jackson
+    messages: jackson
+
+server:
+  port: 20264
+  # Strategy JPA
